@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Whatsapp Chatbot</title>
+
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+
+</head>
+<body>
+
+<div>
+    {% if edit %}
+        <form method="post" action="/update" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{{ edit.id }}">
+    {% else %}
+        <form method="post" action="/insert" enctype="multipart/form-data">
+    {% endif %}
+    {% csrf_token %}
+    <label for="incommingMessage">Incomming Message</label><br>
+    <textarea name="incommingMessage">{{ edit.incommingMsg }}</textarea><br>
+    <label for="reply">Reply</label><br>
+    <textarea name="reply">{{ edit.reply }}</textarea><br>
+    <label for="file">Files</label><br>
+    <input type="file" name="file" multiple><br>
+    <br>
+    <input type="submit" name="submit" multiple>
+    </form>
+</div>
+
+<br>
+<br>
+
+<table>
+    <tr>
+        <th>incomming message</th>
+        <th>reply</th>
+        <th>file</th>
+        <th>Action</th>
+    </tr>
+    {% for i in data %}
+
+        <tr>
+            <td>{{ i.incommingMsg }}</td>
+            <td>{{ i.reply }}</td>
+            <td>
+                {% for j in i.chatId %}
+                    <a href="{{ j.file }}" target="_blank">{{ j.file }}</a>&ensp;
+                    <a href="/deleteFile?id={{ j.id }}">delete</a>
+                    <br><br>
+                {% endfor %}
+            </td>
+            <td><a href="/edit?id={{ i.id }}">Edit</a> <a href="/delete?id={{ i.id }}">Delete</a></td>
+        </tr>
+    {% endfor %}
+
+</table>
+
+
+</body>
+</html>
